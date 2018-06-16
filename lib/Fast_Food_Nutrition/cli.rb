@@ -16,11 +16,25 @@ class Welcome
   end
 
   def select_category(categories, item_site, restaurant)
+    selection = 0
     puts "\nPlease select a Category of Menu Items:"
     categories.each_with_index {|category, i| puts "#{i + 1}: #{category}"}
-    selection = gets.strip.to_i
+    selection = gets.strip.to_i until selection > 0 && selection <= categories.length
     puts "\nYou selected #{categories[selection - 1]}"
-    #select_item(Scraper.new.scrape_category_items(categories[selection - 1], selection, item_site, restaurant), item_site, restaurant)
+    select_item(Scraper.new.scrape_category_items(categories[selection - 1], selection, item_site, restaurant), item_site, restaurant)
+  end
+
+  def select_item(menu_item_list,item_site, restaurant)
+    i = 1
+    selection = 0
+    puts "\nPlease select an item:"
+    menu_item_list.each do |item|
+      puts "#{i}: #{item}"
+      i += 1
+    end
+    selection = gets.strip.to_i until selection > 0 && selection <= menu_item_list.length
+    puts "\nYou selected #{menu_item_list[selection - 1]}"
+    #get_nutrition(Scraper.new.scrape_nutrition_info(menu_item_list[selection - 1], item_site, restaurant), menu_item_list[selection - 1])
   end
 
 end
