@@ -7,27 +7,26 @@ class Scraper
     site = Nokogiri::HTML(open(url))
     site = site.css("div.entry-content table tbody tr")
     site.each do |restaurant|
-      Restaurant.new(restaurant.css("td")[1].css("a").text.strip, restaurant.css("td")[1].css("a").attribute("href").value)
-      Restaurant.new(restaurant.css("td")[3].css("a").text.strip, restaurant.css("td")[3].css("a").attribute("href").value)
+      Restaurant.new(restaurant.css("td")[1].css("a").text.strip, "http://www.nutrition-charts.com/#{restaurant.css("td")[1].css("a").attribute("href").value}")
+      Restaurant.new(restaurant.css("td")[3].css("a").text.strip, "http://www.nutrition-charts.com/#{restaurant.css("td")[3].css("a").attribute("href").value}")
     end
-    Restaurant.all.each do |location|
-      puts "#{location.name}"
-      location.categories = scrape_restaurant_categories(location)
-      #binding.pry
-    end
-    binding.pry
+    # Restaurant.all.each do |location|
+    #   puts "#{location.name}"
+    #   location.categories = scrape_restaurant_categories(location)
+    #   #binding.pry
+    # end
+    # binding.pry
   end
 
   def scrape_restaurant_categories(location)
     category_list = []
-    url = "http://www.nutrition-charts.com/#{location.url}"
+    url = "#{location.url}"
     site = Nokogiri::HTML(open(url))
     case location.name
     when "Burger King"
       site = site.css("div table tbody td h3")
       site.each do |item|
         category = Category.new(item.text)
-        category.items = scrape_category_items(item.text, location)
         category_list << category
       end
       category_list
@@ -35,7 +34,6 @@ class Scraper
       site = site.css("div table tbody td h3")
       site.each do |item|
         category = Category.new(item.text)
-        category.items = scrape_category_items(item.text, location)
         category_list << category
       end
       category_list
@@ -43,7 +41,6 @@ class Scraper
       site = site.css("div table tbody td h3")
       site.each do |item|
         category = Category.new(item.text)
-        category.items = scrape_category_items(item.text, location)
         category_list << category
       end
       category_list
@@ -51,7 +48,6 @@ class Scraper
       site = site.css("div table tbody td strong")
       site.each do |item|
         category = Category.new(item.text)
-        category.items = scrape_category_items(item.text, location)
         category_list << category
       end
       category_list
@@ -60,7 +56,6 @@ class Scraper
       site = site.css("tr.rowheader")
       site.each do |item|
         category = Category.new(item.css("td")[0].text)
-        category.items = scrape_category_items(item.text, location)
         category_list << category
       end
       category_list
@@ -70,7 +65,6 @@ class Scraper
         item.to_s.include?("<th>") ? category = Category.new(item.css("th")[0].text) : ""
         #category = Category.new(item.css("th")[0].text)
         if category
-          category.items = scrape_category_items(item.text, location)
           category_list << category
         end
       end
@@ -78,12 +72,10 @@ class Scraper
     else
       site = site.css("div table tbody")
       category = Category.new(site[0].css("tr")[0].css("th")[0].text)
-      category.items = scrape_category_items(site[0].css("tr")[0].css("th")[0].text, location)
       category_list << category
       site = site.css("tr.rowheader")
       site.each do |item|
         category = Category.new(item.css("th")[0].text)
-        category.items = scrape_category_items(item.text, location)
         category_list << category
       end
       category_list
@@ -92,7 +84,7 @@ class Scraper
 
   def scrape_category_items(item_name, location)
       item_list = []
-      url = "http://www.nutrition-charts.com/#{location.url}"
+      url = "#{location.url}"
       site = Nokogiri::HTML(open(url))
       case location.name
       when "Burger King"
