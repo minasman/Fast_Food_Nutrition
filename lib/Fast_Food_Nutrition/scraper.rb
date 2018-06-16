@@ -1,76 +1,89 @@
-require 'nokogiri'
-require 'open-uri'
 require 'pry'
+require 'Nokogiri'
+require 'open-uri'
 
 class Scraper
   def scrape_site_for_restaurants(url)
-    restaurants = []
     site = Nokogiri::HTML(open(url))
     site = site.css("div.entry-content table tbody tr")
     site.each do |restaurant|
-      restaurants << {restaurant.css("td")[1].css("a").text.strip => restaurant.css("td")[1].css("a").attribute("href").value}
-      restaurants << {restaurant.css("td")[3].css("a").text.strip => restaurant.css("td")[3].css("a").attribute("href").value}
+      Restaurant.new(restaurant.css("td")[1].css("a").text.strip, restaurant.css("td")[1].css("a").attribute("href").value)
+      Restaurant.new(restaurant.css("td")[3].css("a").text.strip, restaurant.css("td")[3].css("a").attribute("href").value)
     end
-    restaurants
+    Restaurant.all.each do |location|
+      puts "#{location.name}"
+      location.categories = scrape_restaurant_categories(location)
+    end
+    binding.pry
   end
 
-  def scrape_restaurant_categories(category)
+  def scrape_restaurant_categories(location)
     category_list = []
-    url = "http://www.nutrition-charts.com/#{category.flatten[1]}"
+    list = []
+    url = "http://www.nutrition-charts.com/#{location.url}"
     site = Nokogiri::HTML(open(url))
-    case category.flatten[0]
+    case location.name
     when "Burger King"
       site = site.css("div table tbody td h3")
       site.each do |item|
-        category_list << item.text
+        list = scrape_category_items(item.text, location)
+        category_list << Category.new(item.text).items = list
       end
       category_list
     when "Wendys"
       site = site.css("div table tbody td h3")
       site.each do |item|
-        category_list << item.text
+        list = scrape_category_items(item.text, location)
+        category_list << Category.new(item.text).items = list
       end
       category_list
     when "Buffalo Wild Wings"
       site = site.css("div table tbody td h3")
       site.each do |item|
-        category_list << item.text
+        list = scrape_category_items(item.text, location)
+        category_list << Category.new(item.text).items = list
       end
       category_list
     when "Pizza Hut"
       site = site.css("div table tbody td strong")
       site.each do |item|
-        category_list << item.text
+        list = scrape_category_items(item.text, location)
+        category_list << Category.new(item.text).items = list
       end
       category_list
     when "Applebees"
       site = site.css("div table tbody")
       site = site.css("tr.rowheader")
       site.each do |item|
-        category_list << item.css("td")[0].text
+        list = scrape_category_items(item.text, location)
+        category_list << Category.new(item.css("td")[0].text).items = list
       end
       category_list
     when "Baja Fresh"
       site = site.css("div table tbody tr")
       site.each do |item|
-        item.to_s.include?("<th>") ? category_list << item.css("th")[0].text : ""
+        list = scrape_category_items(item.text, location)
+        item.to_s.include?("<th>") ? category_list << Category.new(item.css("th")[0].text).items = list : ""
       end
       category_list
     else
       site = site.css("div table tbody")
-      category_list << site[0].css("tr")[0].css("th")[0].text
+      list = scrape_category_items(site[0].css("tr")[0].css("th")[0].text, location)
+      category_list << Category.new(site[0].css("tr")[0].css("th")[0].text).items = list
       site = site.css("tr.rowheader")
       site.each do |item|
-        category_list << item.css("th")[0].text
+        list = scrape_category_items(item.text, location)
+        category_list << Category.new(item.css("th")[0].text).items = list
       end
       category_list
     end
   end
 
-  def scrape_category_items(item_name, index, item_site, restaurant)
+  def scrape_category_items(item_name, location)
       item_list = []
-      site = Nokogiri::HTML(open(item_site))
-      case restaurant
+      url = "http://www.nutrition-charts.com/#{location.url}"
+      site = Nokogiri::HTML(open(url))
+      case location.name
       when "Burger King"
         site = site.css("div table tbody tr")
         site.each do |item|
@@ -79,7 +92,7 @@ class Scraper
               next_item = item.next_element
               begin
                 if next_item.to_s.include?("<td>") && !next_item.to_s.include?("<span") && !next_item.to_s.include?("header")
-                  item_list << next_item.css("td")[0].text
+                  item_list << Item.new(next_item.css("td")[0].text)
                 end
                 next_item = next_item.next_element
                 next_item == nil ? next_item = "<h3>" : next_item
@@ -96,7 +109,7 @@ class Scraper
               next_item = item.next_element
               begin
                 if next_item.to_s.include?("<td>") && !next_item.to_s.include?("<span") && !next_item.to_s.include?("header")
-                  item_list << next_item.css("td")[0].text
+                  item_list << Item.new(next_item.css("td")[0].text)
                 end
                 next_item = next_item.next_element
                 next_item == nil ? next_item = "<h3>" : next_item
@@ -113,7 +126,7 @@ class Scraper
               next_item = item.next_element
               begin
                 if next_item.to_s.include?("<td>") && !next_item.to_s.include?("<span") && !next_item.to_s.include?("header") && next_item.css("td")[0].text != " "
-                  item_list << next_item.css("td")[0].text
+                  item_list << Item.new(next_item.css("td")[0].text)
                 end
                 next_item = next_item.next_element
                 next_item == nil ? next_item = "<h3>" : next_item
@@ -129,7 +142,7 @@ class Scraper
             if item.css("strong")[0].text == item_name
               next_item = item.next_element
               begin
-                item_list << next_item.css("td")[0].text if !next_item.to_s.include?("<span")
+                item_list << Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
                 next_item = next_item.next_element
                 next_item == nil ? next_item = "<strong>" : next_item
               end while !next_item.to_s.include?("<strong>")
@@ -144,7 +157,7 @@ class Scraper
             if item.css("td")[0].text == item_name
               next_item = item.next_element
               begin
-                item_list << next_item.css("td")[0].text if !next_item.to_s.include?("<span")
+                item_list << Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
                 next_item = next_item.next_element
                 next_item == nil ? next_item = "<rowheader>" : next_item
               end while !next_item.to_s.include?("rowheader")
@@ -159,7 +172,7 @@ class Scraper
           if item.css("th")[0].text == item_name
             next_item = item.next_element
             begin
-              item_list << next_item.css("td")[0].text if !next_item.to_s.include?("<span")
+              item_list << Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
               next_item = next_item.next_element
               next_item == nil ? next_item = "<th>" : next_item
             end while !next_item.to_s.include?("<th>")
