@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Daniel Hernandez"]
   spec.email         = ["elreymcd@yahoo.com"]
 
-  spec.summary       = "For nutrition"
-  spec.description   = "For nutrition"
+  spec.summary       = "Finds nutrition information for items from top QSRs"
+  spec.description   = "Finds nutrition information for items from top QSRs"
   spec.homepage      = "http://rubygems.org/gems/Fast_Food_Nutrition"
   spec.license       = "MIT"
 
