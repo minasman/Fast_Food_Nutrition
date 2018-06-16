@@ -42,7 +42,18 @@ class Welcome
     nutrition_list.each do |item|
       puts "  #{item[0]}: #{item[1]}"
     end
-    #continue?
+    continue?
+  end
+
+  def continue?
+    input = ""
+    puts "\nWould you like to continue to find more items? (y/n)"
+    input = gets.strip.downcase until input == "y" || input == "n"
+    input == "y" ? list_restaurants : bye
+  end
+
+  def bye
+    puts "\nThank You for using the Fast Food Nutrition Finder"
   end
 
 end
