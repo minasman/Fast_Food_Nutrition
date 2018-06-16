@@ -1,8 +1,6 @@
 # FastFoodNutrition
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/Fast_Food_Nutrition`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+The Fast Food Nutrition gem is a command line interface tool that will get nutrition information for menu items from several of the top Fast Food and Quick service restaurants in the country.
 
 ## Installation
 
@@ -22,7 +20,8 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Once installed, cd into Fast_Food_Nutrition folder and execute ruby bin/ff_nutrition from the main folder on your terminal.
+User will select a restaurant from the list supplied, then choose a category, then choose and item. The nutrition information for the item will be returned. User will have to option to search for another item or end the program.
 
 ## Development
 
