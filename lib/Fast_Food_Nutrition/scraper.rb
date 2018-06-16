@@ -13,67 +13,78 @@ class Scraper
     Restaurant.all.each do |location|
       puts "#{location.name}"
       location.categories = scrape_restaurant_categories(location)
+      #binding.pry
     end
     binding.pry
   end
 
   def scrape_restaurant_categories(location)
     category_list = []
-    list = []
     url = "http://www.nutrition-charts.com/#{location.url}"
     site = Nokogiri::HTML(open(url))
     case location.name
     when "Burger King"
       site = site.css("div table tbody td h3")
       site.each do |item|
-        list = scrape_category_items(item.text, location)
-        category_list << Category.new(item.text).items = list
+        category = Category.new(item.text)
+        category.items = scrape_category_items(item.text, location)
+        category_list << category
       end
       category_list
     when "Wendys"
       site = site.css("div table tbody td h3")
       site.each do |item|
-        list = scrape_category_items(item.text, location)
-        category_list << Category.new(item.text).items = list
+        category = Category.new(item.text)
+        category.items = scrape_category_items(item.text, location)
+        category_list << category
       end
       category_list
     when "Buffalo Wild Wings"
       site = site.css("div table tbody td h3")
       site.each do |item|
-        list = scrape_category_items(item.text, location)
-        category_list << Category.new(item.text).items = list
+        category = Category.new(item.text)
+        category.items = scrape_category_items(item.text, location)
+        category_list << category
       end
       category_list
     when "Pizza Hut"
       site = site.css("div table tbody td strong")
       site.each do |item|
-        list = scrape_category_items(item.text, location)
-        category_list << Category.new(item.text).items = list
+        category = Category.new(item.text)
+        category.items = scrape_category_items(item.text, location)
+        category_list << category
       end
       category_list
     when "Applebees"
       site = site.css("div table tbody")
       site = site.css("tr.rowheader")
       site.each do |item|
-        list = scrape_category_items(item.text, location)
-        category_list << Category.new(item.css("td")[0].text).items = list
+        category = Category.new(item.css("td")[0].text)
+        category.items = scrape_category_items(item.text, location)
+        category_list << category
       end
       category_list
     when "Baja Fresh"
       site = site.css("div table tbody tr")
       site.each do |item|
-        list = scrape_category_items(item.text, location)
-        item.to_s.include?("<th>") ? category_list << Category.new(item.css("th")[0].text).items = list : ""
+        item.to_s.include?("<th>") ? category = Category.new(item.css("th")[0].text) : ""
+        #category = Category.new(item.css("th")[0].text)
+        if category
+          category.items = scrape_category_items(item.text, location)
+          category_list << category
+        end
       end
       category_list
     else
       site = site.css("div table tbody")
-      list = scrape_category_items(site[0].css("tr")[0].css("th")[0].text, location)
-      category_list << Category.new(site[0].css("tr")[0].css("th")[0].text).items = list
+      category = Category.new(site[0].css("tr")[0].css("th")[0].text)
+      category.items = scrape_category_items(site[0].css("tr")[0].css("th")[0].text, location)
+      category_list << category
       site = site.css("tr.rowheader")
       site.each do |item|
-        list = scrape_category_items(item.text, location)
-        category_list << Category.new(item.css("th")[0].text).items = list
+        category = Category.new(item.css("th")[0].text)
+        category.items = scrape_category_items(item.text, location)
+        category_list << category
       end
       category_list
     end
