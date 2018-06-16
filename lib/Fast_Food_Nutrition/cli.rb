@@ -34,7 +34,15 @@ class Welcome
     end
     selection = gets.strip.to_i until selection > 0 && selection <= menu_item_list.length
     puts "\nYou selected #{menu_item_list[selection - 1]}"
-    #get_nutrition(Scraper.new.scrape_nutrition_info(menu_item_list[selection - 1], item_site, restaurant), menu_item_list[selection - 1])
+    get_nutrition(Scraper.new.scrape_nutrition_info(menu_item_list[selection - 1], item_site, restaurant), menu_item_list[selection - 1])
+  end
+
+  def get_nutrition(nutrition_list, item_name)
+    puts "\nHere is the nutrition information for #{item_name}:"
+    nutrition_list.each do |item|
+      puts "  #{item[0]}: #{item[1]}"
+    end
+    #continue?
   end
 
 end
