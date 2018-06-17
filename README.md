@@ -20,7 +20,11 @@ Or install it yourself as:
 
 ## Usage
 
-Once installed, cd into Fast_Food_Nutrition folder and execute ruby bin/ff_nutrition from the main folder on your terminal.
+Once installed, the lines below will run the gem:
+
+    require 'Fast_Food_Nutrition'
+    Welcome.new.intro
+
 User will select a restaurant from the list supplied, then choose a category, then choose and item. The nutrition information for the item will be returned. User will have to option to search for another item or end the program.
 
 ## Development
