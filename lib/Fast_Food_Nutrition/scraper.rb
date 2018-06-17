@@ -10,12 +10,6 @@ class Scraper
       Restaurant.new(restaurant.css("td")[1].css("a").text.strip, "http://www.nutrition-charts.com/#{restaurant.css("td")[1].css("a").attribute("href").value}")
       Restaurant.new(restaurant.css("td")[3].css("a").text.strip, "http://www.nutrition-charts.com/#{restaurant.css("td")[3].css("a").attribute("href").value}")
     end
-    # Restaurant.all.each do |location|
-    #   puts "#{location.name}"
-    #   location.categories = scrape_restaurant_categories(location)
-    #   #binding.pry
-    # end
-    # binding.pry
   end
 
   def scrape_restaurant_categories(location)
