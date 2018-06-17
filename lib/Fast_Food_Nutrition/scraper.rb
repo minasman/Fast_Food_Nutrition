@@ -59,7 +59,7 @@ class Scraper
         category_list << category
       end
       category_list
-    when "Baja Fresh"
+    when "Baja Fresh" #Still having issues with this one
       site = site.css("div table tbody tr")
       site.each do |item|
         item.to_s.include?("<th>") ? category = Category.new(item.css("th")[0].text) : ""
@@ -82,16 +82,16 @@ class Scraper
     end
   end
 
-  def scrape_category_items(item_name, location)
+  def scrape_category_items(restaurant, category)
       item_list = []
-      url = "#{location.url}"
+      url = "#{restaurant.url}"
       site = Nokogiri::HTML(open(url))
-      case location.name
+      case restaurant.name
       when "Burger King"
         site = site.css("div table tbody tr")
         site.each do |item|
           if item.to_s.include?("<h3>")
-            if item.css("h3")[0].text == item_name
+            if item.css("h3")[0].text == restaurant.categories[category].name
               next_item = item.next_element
               begin
                 if next_item.to_s.include?("<td>") && !next_item.to_s.include?("<span") && !next_item.to_s.include?("header")
@@ -108,7 +108,7 @@ class Scraper
         site = site.css("div table tbody tr")
         site.each do |item|
           if item.to_s.include?("<h3>")
-            if item.css("h3")[0].text == item_name
+            if item.css("h3")[0].text == restaurant.categories[category].name
               next_item = item.next_element
               begin
                 if next_item.to_s.include?("<td>") && !next_item.to_s.include?("<span") && !next_item.to_s.include?("header")
@@ -125,7 +125,7 @@ class Scraper
         site = site.css("div table tbody tr")
         site.each do |item|
           if item.to_s.include?("<h3>")
-            if item.css("h3")[0].text == item_name
+            if item.css("h3")[0].text == restaurant.categories[category].name
               next_item = item.next_element
               begin
                 if next_item.to_s.include?("<td>") && !next_item.to_s.include?("<span") && !next_item.to_s.include?("header") && next_item.css("td")[0].text != " "
@@ -142,7 +142,7 @@ class Scraper
         site = site.css("div table tbody tr")
         site.each do |item|
           if item.to_s.include?("<strong>")
-            if item.css("strong")[0].text == item_name
+            if item.css("strong")[0].text == restaurant.categories[category].name
               next_item = item.next_element
               begin
                 item_list << Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
@@ -157,7 +157,7 @@ class Scraper
        site = site.css("div table tbody tr")
        site.each do |item|
           if item.to_s.include?("rowheader")
-            if item.css("td")[0].text == item_name
+            if item.css("td")[0].text == restaurant.categories[category].name
               next_item = item.next_element
               begin
                 item_list << Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
@@ -172,7 +172,7 @@ class Scraper
       site = site.css("div table tbody tr")
       site.each do |item|
         if item.to_s.include?("<th>")
-          if item.css("th")[0].text == item_name
+          if item.css("th")[0].text == restaurant.categories[category].name
             next_item = item.next_element
             begin
               item_list << Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
@@ -186,18 +186,18 @@ class Scraper
     end
   end
 
-  def scrape_nutrition_info(item_name, item_site, restaurant)
+  def scrape_nutrition_info(restaurant, cat_picked, item_picked)
     index = 1
     nutrition_list = []
-    site = Nokogiri::HTML(open(item_site))
-    case restaurant
+    site = Nokogiri::HTML(open(restaurant.url))
+    case restaurant.name
     when "Burger King"
       nutrition_items = site.css("div table thead tr th")
       nutrition_items.each {|desc| nutrition_list << [desc.text.strip, ""]}
       site = site.css("div table tbody tr")
       site.each do |item|
         if item.to_s.include?("<td>")
-          if item.css("td")[0].text == item_name
+          if item.css("td")[0].text == restaurant.categories[cat_picked].items[item_picked].name
             i = 0
             while i < nutrition_list.length
               nutrition_list[i][1] = item.css("td")[i].text
@@ -214,7 +214,7 @@ class Scraper
       site = site.css("div table tbody tr")
       site.each do |item|
         if item.to_s.include?("<td>")
-          if item.css("td")[0].text == item_name
+          if item.css("td")[0].text == restaurant.categories[cat_picked].items[item_picked].name
             i = 0
             while i < nutrition_list.length
               nutrition_list[i][1] = item.css("td")[i].text
@@ -231,7 +231,7 @@ class Scraper
       site = site.css("div table tbody tr")
       site.each do |item|
         if item.to_s.include?("<td>")
-          if item.css("td")[0].text == item_name
+          if item.css("td")[0].text == restaurant.categories[cat_picked].items[item_picked].name
             i = 0
             while i < nutrition_list.length
               nutrition_list[i][1] = item.css("td")[i].text

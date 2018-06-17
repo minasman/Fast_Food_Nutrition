@@ -15,4 +15,8 @@ class Category
     @items = item_array
   end
 
+  def items
+    @items
+  end
+
 end
