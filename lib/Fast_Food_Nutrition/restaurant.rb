@@ -1,4 +1,4 @@
-class Restaurant
+class FastFoodNutrition::Restaurant
   attr_accessor :name, :url, :categories
   @@all = []
   def initialize(name, url)

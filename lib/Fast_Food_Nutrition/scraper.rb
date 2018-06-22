@@ -1,14 +1,10 @@
-require 'pry'
-require 'Nokogiri'
-require 'open-uri'
-
-class Scraper
+class FastFoodNutrition::Scraper
   def scrape_site_for_restaurants(url)
     site = Nokogiri::HTML(open(url))
     site = site.css("div.entry-content table tbody tr")
     site.each do |restaurant|
-      Restaurant.new(restaurant.css("td")[1].css("a").text.strip, "http://www.nutrition-charts.com/#{restaurant.css("td")[1].css("a").attribute("href").value}")
-      Restaurant.new(restaurant.css("td")[3].css("a").text.strip, "http://www.nutrition-charts.com/#{restaurant.css("td")[3].css("a").attribute("href").value}")
+      FastFoodNutrition::Restaurant.new(restaurant.css("td")[1].css("a").text.strip, "http://www.nutrition-charts.com/#{restaurant.css("td")[1].css("a").attribute("href").value}")
+      FastFoodNutrition::Restaurant.new(restaurant.css("td")[3].css("a").text.strip, "http://www.nutrition-charts.com/#{restaurant.css("td")[3].css("a").attribute("href").value}")
     end
   end
 
@@ -20,14 +16,14 @@ class Scraper
     when "Burger King", "Wendys", "Buffalo Wild Wings", "McDonalds"
       site = site.css("div table tbody td h3")
       site.each do |item|
-        category = Category.new(item.text)
+        category =  FastFoodNutrition::Category.new(item.text)
         category_list << category
       end
       category_list
     when "Pizza Hut"
       site = site.css("div table tbody td strong")
       site.each do |item|
-        category = Category.new(item.text)
+        category = FastFoodNutrition::Category.new(item.text)
         category_list << category
       end
       category_list
@@ -35,14 +31,14 @@ class Scraper
       site = site.css("div table tbody")
       site = site.css("tr.rowheader")
       site.each do |item|
-        category = Category.new(item.css("td")[0].text)
+        category = FastFoodNutrition::Category.new(item.css("td")[0].text)
         category_list << category
       end
       category_list
     when "Baja Fresh"
       site = site.css("div table tbody tr")
       site.each do |item|
-        item.to_s.include?("<th>") ? category = Category.new(item.css("th")[0].text) : ""
+        item.to_s.include?("<th>") ? category = FastFoodNutrition::Category.new(item.css("th")[0].text) : ""
         if category
           category_list << category
         end
@@ -50,11 +46,11 @@ class Scraper
       category_list
     else
       site = site.css("div table tbody")
-      category = Category.new(site[0].css("tr")[0].css("th")[0].text)
+      category = FastFoodNutrition::Category.new(site[0].css("tr")[0].css("th")[0].text)
       category_list << category
       site = site.css("tr.rowheader")
       site.each do |item|
-        category = Category.new(item.css("th")[0].text)
+        category = FastFoodNutrition::Category.new(item.css("th")[0].text)
         category_list << category
       end
       category_list
@@ -74,7 +70,7 @@ class Scraper
               next_item = item.next_element
               begin
                 if next_item.to_s.include?("<td>") && !next_item.to_s.include?("<span") && !next_item.to_s.include?("header")
-                  item_list << Item.new(next_item.css("td")[0].text)
+                  item_list << FastFoodNutrition::Item.new(next_item.css("td")[0].text)
                 end
                 next_item = next_item.next_element
                 next_item == nil ? next_item = "<h3>" : next_item
@@ -91,7 +87,7 @@ class Scraper
               next_item = item.next_element
               begin
                 if next_item.to_s.include?("<td>") && !next_item.to_s.include?("<span") && !next_item.to_s.include?("header") && next_item.css("td")[0].text != " "
-                  item_list << Item.new(next_item.css("td")[0].text)
+                  item_list << FastFoodNutrition::Item.new(next_item.css("td")[0].text)
                 end
                 next_item = next_item.next_element
                 next_item == nil ? next_item = "<h3>" : next_item
@@ -107,7 +103,7 @@ class Scraper
             if item.css("strong")[0].text == restaurant.categories[category].name
               next_item = item.next_element
               begin
-                item_list << Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
+                item_list << FastFoodNutrition::Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
                 next_item = next_item.next_element
                 next_item == nil ? next_item = "<strong>" : next_item
               end while !next_item.to_s.include?("<strong>")
@@ -122,7 +118,7 @@ class Scraper
             if item.css("td")[0].text == restaurant.categories[category].name
               next_item = item.next_element
               begin
-                item_list << Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
+                item_list << FastFoodNutrition::Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
                 next_item = next_item.next_element
                 next_item == nil ? next_item = "<rowheader>" : next_item
               end while !next_item.to_s.include?("rowheader")
@@ -137,7 +133,7 @@ class Scraper
           if item.css("th")[0].text == restaurant.categories[category].name
             next_item = item.next_element
             begin
-              item_list << Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
+              item_list << FastFoodNutrition::Item.new(next_item.css("td")[0].text) if !next_item.to_s.include?("<span")
               next_item = next_item.next_element
               next_item == nil ? next_item = "<th>" : next_item
             end while !next_item.to_s.include?("<th>")

@@ -4,3 +4,6 @@ require_relative "./Fast_Food_Nutrition/scraper"
 require_relative "./Fast_Food_Nutrition/restaurant"
 require_relative "./Fast_Food_Nutrition/category"
 require_relative "./Fast_Food_Nutrition/items"
+require 'pry'
+require 'Nokogiri'
+require 'open-uri'

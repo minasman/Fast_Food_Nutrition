@@ -1,4 +1,4 @@
-class Category
+class FastFoodNutrition::Category
   attr_accessor :name, :items
   @@all = []
 

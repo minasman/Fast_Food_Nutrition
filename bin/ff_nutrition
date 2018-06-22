@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
 require "./lib/Fast_Food_Nutrition"
-Welcome.new.intro
+FastFoodNutrition::Welcome.new.intro

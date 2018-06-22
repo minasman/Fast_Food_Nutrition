@@ -1,4 +1,4 @@
-class Item
+class FastFoodNutrition::Item
   attr_accessor :name, :nutrition
   @@all = []
 

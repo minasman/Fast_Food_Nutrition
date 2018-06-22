@@ -1,4 +1,4 @@
-class Welcome
+class FastFoodNutrition::Welcome
 
   def intro
     puts "Welcome To The Fast Food Nutrition Finder"
@@ -8,16 +8,16 @@ class Welcome
   def list_restaurants
     selection = 0
     puts "\nPlease select a Restaurant by number:"
-    Scraper.new.scrape_site_for_restaurants("http://www.nutrition-charts.com/") if Restaurant.all.size == 0
-    Restaurant.all.each_with_index {|restaurant, i| puts "#{i + 1}: #{restaurant.name}"}
+    FastFoodNutrition::Scraper.new.scrape_site_for_restaurants("http://www.nutrition-charts.com/") if FastFoodNutrition::Restaurant.all.size == 0
+    FastFoodNutrition::Restaurant.all.each_with_index {|restaurant, i| puts "#{i + 1}: #{restaurant.name}"}
     # consider #between?
-    selection = gets.strip.to_i until selection.between?(1, Restaurant.all.size)
-    puts "\nYou selected #{Restaurant.all[selection - 1].name}"
-    select_category(Restaurant.all[selection - 1])
+    selection = gets.strip.to_i until selection.between?(1, FastFoodNutrition::Restaurant.all.size)
+    puts "\nYou selected #{FastFoodNutrition::Restaurant.all[selection - 1].name}"
+    select_category(FastFoodNutrition::Restaurant.all[selection - 1])
   end
 
   def select_category(restaurant)
-    restaurant.categories = Scraper.new.scrape_restaurant_categories(restaurant) if !restaurant.categories
+    restaurant.categories = FastFoodNutrition::Scraper.new.scrape_restaurant_categories(restaurant) if !restaurant.categories
     selection = 0
     puts "\nPlease select a Category of Menu Items:"
     restaurant.categories.each_with_index {|category, i| puts "#{i + 1}: #{category.name}"}
@@ -27,7 +27,7 @@ class Welcome
   end
 
   def select_item(restaurant, cat_picked)
-    restaurant.categories[cat_picked].items = Scraper.new.scrape_category_items(restaurant, cat_picked) if !restaurant.categories[cat_picked].items
+    restaurant.categories[cat_picked].items = FastFoodNutrition::Scraper.new.scrape_category_items(restaurant, cat_picked) if !restaurant.categories[cat_picked].items
     selection = 0
     puts "\nPlease select an item:"
     restaurant.categories[cat_picked].items.each_with_index do |item, i|
@@ -39,7 +39,7 @@ class Welcome
   end
 
   def get_nutrition(restaurant, cat_picked, item_picked)
-    restaurant.categories[cat_picked].items[item_picked].nutrition = Scraper.new.scrape_nutrition_info(restaurant, cat_picked, item_picked) if !restaurant.categories[cat_picked].items[item_picked].nutrition
+    restaurant.categories[cat_picked].items[item_picked].nutrition = FastFoodNutrition::Scraper.new.scrape_nutrition_info(restaurant, cat_picked, item_picked) if !restaurant.categories[cat_picked].items[item_picked].nutrition
     puts "\nHere is the nutrition information for #{restaurant.categories[cat_picked].items[item_picked].name}:"
     restaurant.categories[cat_picked].items[item_picked].nutrition.each do |item|
       puts "  #{item[0]}: #{item[1]}"
