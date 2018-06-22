@@ -1,5 +1,5 @@
 class Item
-  attr_accessor :name
+  attr_accessor :name, :nutrition
   @@all = []
 
   def initialize(name)
@@ -8,14 +8,6 @@ class Item
 
   def self.all
     @@all
-  end
-
-  def nutrition=(nutrition_array)
-    @nutrition = nutrition_array
-  end
-
-  def nutrition
-    @nutrition
   end
 
 end

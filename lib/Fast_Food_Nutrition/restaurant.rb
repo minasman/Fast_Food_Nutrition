@@ -1,5 +1,5 @@
 class Restaurant
-  attr_accessor :name, :url
+  attr_accessor :name, :url, :categories
   @@all = []
   def initialize(name, url)
     @name = name
@@ -9,14 +9,6 @@ class Restaurant
 
   def self.all
     @@all
-  end
-
-  def categories=(category_array)
-    @categories = category_array
-  end
-
-  def categories
-    @categories
   end
 
   def self.find_restaurant_by_name(name)

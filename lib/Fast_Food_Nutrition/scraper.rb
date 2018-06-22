@@ -24,20 +24,6 @@ class Scraper
         category_list << category
       end
       category_list
-    # when "Wendys"
-    #   site = site.css("div table tbody td h3")
-    #   site.each do |item|
-    #     category = Category.new(item.text)
-    #     category_list << category
-    #   end
-    #   category_list
-    # when "Buffalo Wild Wings"
-    #   site = site.css("div table tbody td h3")
-    #   site.each do |item|
-    #     category = Category.new(item.text)
-    #     category_list << category
-    #   end
-    #   category_list
     when "Pizza Hut"
       site = site.css("div table tbody td strong")
       site.each do |item|
@@ -98,23 +84,6 @@ class Scraper
           end
         end
         item_list
-      # when "Wendys"
-      #   site = site.css("div table tbody tr")
-      #   site.each do |item|
-      #     if item.to_s.include?("<h3>")
-      #       if item.css("h3")[0].text == restaurant.categories[category].name
-      #         next_item = item.next_element
-      #         begin
-      #           if next_item.to_s.include?("<td>") && !next_item.to_s.include?("<span") && !next_item.to_s.include?("header")
-      #             item_list << Item.new(next_item.css("td")[0].text)
-      #           end
-      #           next_item = next_item.next_element
-      #           next_item == nil ? next_item = "<h3>" : next_item
-      #         end while !next_item.to_s.include?("<h3>")
-      #       end
-      #     end
-      #   end
-      #   item_list
       when "Buffalo Wild Wings"
         site = site.css("div table tbody tr")
         site.each do |item|

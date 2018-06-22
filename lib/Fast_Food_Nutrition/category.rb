@@ -11,12 +11,4 @@ class Category
     @@all
   end
 
-  # def items=(item_array)
-  #   @items = item_array
-  # end
-  #
-  # def items
-  #   @items
-  # end
-
 end

@@ -11,7 +11,7 @@ class Welcome
     Scraper.new.scrape_site_for_restaurants("http://www.nutrition-charts.com/") if Restaurant.all.size == 0
     Restaurant.all.each_with_index {|restaurant, i| puts "#{i + 1}: #{restaurant.name}"}
     # consider #between?
-    selection = gets.strip.to_i until selection > 0 && selection <= Restaurant.all.size
+    selection = gets.strip.to_i until selection.between?(1, Restaurant.all.size)
     puts "\nYou selected #{Restaurant.all[selection - 1].name}"
     select_category(Restaurant.all[selection - 1])
   end
