@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    Fast_Food_Nutrition (0.2.1)
+    Fast_Food_Nutrition (1.2.1)
       nokogiri (~> 1.8, >= 1.8.2)
       open_uri_redirections (~> 0.2.1)
 
