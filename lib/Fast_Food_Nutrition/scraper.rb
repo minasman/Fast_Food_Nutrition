@@ -17,7 +17,7 @@ class Scraper
     url = "#{location.url}"
     site = Nokogiri::HTML(open(url))
     case location.name
-    when "Burger King", "Wendys", "Buffalo Wild Wings"
+    when "Burger King", "Wendys", "Buffalo Wild Wings", "McDonalds"
       site = site.css("div table tbody td h3")
       site.each do |item|
         category = Category.new(item.text)
@@ -39,11 +39,10 @@ class Scraper
         category_list << category
       end
       category_list
-    when "Baja Fresh" #Still having issues with this one
+    when "Baja Fresh"
       site = site.css("div table tbody tr")
       site.each do |item|
         item.to_s.include?("<th>") ? category = Category.new(item.css("th")[0].text) : ""
-        #category = Category.new(item.css("th")[0].text)
         if category
           category_list << category
         end
@@ -67,7 +66,7 @@ class Scraper
       url = "#{restaurant.url}"
       site = Nokogiri::HTML(open(url))
       case restaurant.name
-      when "Burger King", "Wendys"
+      when "Burger King", "Wendys", "McDonalds"
         site = site.css("div table tbody tr")
         site.each do |item|
           if item.to_s.include?("<h3>")
@@ -168,7 +167,7 @@ class Scraper
             end
           end
         end
-      end #do
+      end
       nutrition_list.shift
       nutrition_list
     when "Pizza Hut"
@@ -185,7 +184,7 @@ class Scraper
             end
           end
         end
-      end #do
+      end
       nutrition_list.shift
       nutrition_list
     else
@@ -202,7 +201,7 @@ class Scraper
             end
           end
         end
-      end #do
+      end
       nutrition_list.shift
       nutrition_list
     end

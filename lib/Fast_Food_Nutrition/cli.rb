@@ -21,7 +21,7 @@ class Welcome
     selection = 0
     puts "\nPlease select a Category of Menu Items:"
     restaurant.categories.each_with_index {|category, i| puts "#{i + 1}: #{category.name}"}
-    selection = gets.strip.to_i until selection > 0 && selection <= restaurant.categories.size
+    selection = gets.strip.to_i until selection.between?(1, restaurant.categories.size)
     puts "\nYou selected #{restaurant.categories[selection - 1].name}"
     select_item(restaurant, selection - 1)
   end
@@ -33,7 +33,7 @@ class Welcome
     restaurant.categories[cat_picked].items.each_with_index do |item, i|
       puts "#{i + 1}: #{item.name}"
     end
-    selection = gets.strip.to_i until selection > 0 && selection <= restaurant.categories[cat_picked].items.size
+    selection = gets.strip.to_i until selection.between?(1, restaurant.categories[cat_picked].items.size)
     puts "\nYou selected #{restaurant.categories[cat_picked].items[selection - 1].name}"
     get_nutrition(restaurant, cat_picked, selection - 1)
   end
